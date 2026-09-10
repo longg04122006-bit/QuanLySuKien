@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="API/API.csproj" />
+  <Project Path="BLL/BLL.csproj" />
+  <Project Path="DAL.Helper/DAL.Helper.csproj" />
+  <Project Path="DAL/DAL.csproj" />
+  <Project Path="Model/Model.csproj" />
+</Solution>
