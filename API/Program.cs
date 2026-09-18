@@ -1,23 +1,59 @@
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// =========================
+// 1. Đăng ký Controller
+// =========================
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+// =========================
+// 2. Swagger / OpenAPI
+// =========================
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// =========================
+// 3. CORS
+// =========================
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// =========================
+// 4. Swagger
+// =========================
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
+// =========================
+// 5. HTTPS
+// =========================
 app.UseHttpsRedirection();
 
+// =========================
+// 6. CORS
+// =========================
+app.UseCors("AllowAll");
+
+// =========================
+// 7. Authorization
+// =========================
 app.UseAuthorization();
 
+// =========================
+// 8. Controller
+// =========================
 app.MapControllers();
 
 app.Run();
