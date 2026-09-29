@@ -1,20 +1,73 @@
+using BLL;
+using DAL;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// =========================
-// 1. Đăng ký Controller
-// =========================
+// Controller
 builder.Services.AddControllers();
 
-// =========================
-// 2. Swagger / OpenAPI
-// =========================
+// JWT
+var jwtKey = builder.Configuration["Jwt:Key"];
+
+if (string.IsNullOrEmpty(jwtKey))
+{
+    throw new Exception("Chưa cấu hình Jwt:Key trong appsettings.json");
+}
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtKey))
+    };
+});
+
+// DAL + BLL
+builder.Services.AddScoped<EventDAL>();
+builder.Services.AddScoped<EventBLL>();
+
+builder.Services.AddScoped<TicketTypeDAL>();
+builder.Services.AddScoped<TicketTypeBLL>();
+
+builder.Services.AddScoped<UserDAL>();
+
+builder.Services.AddScoped<TicketDAL>();
+builder.Services.AddScoped<TicketBLL>();
+
+builder.Services.AddScoped<BookingDetailDAL>();
+builder.Services.AddScoped<BookingDetailBLL>();
+builder.Services.AddScoped<BookingDAL>();
+builder.Services.AddScoped<BookingBLL>();
+builder.Services.AddScoped<EventCategoryDAL>();
+builder.Services.AddScoped<EventCategoryBLL>();
+builder.Services.AddScoped<PaymentDAL>();
+builder.Services.AddScoped<PaymentBLL>();
+
+
+builder.Services.AddScoped<DAL.Helper.DatabaseHelper>();
+
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// =========================
-// 3. CORS
-// =========================
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -27,33 +80,20 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// =========================
-// 4. Swagger
-// =========================
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// =========================
-// 5. HTTPS
-// =========================
 app.UseHttpsRedirection();
 
-// =========================
-// 6. CORS
-// =========================
 app.UseCors("AllowAll");
 
-// =========================
-// 7. Authorization
-// =========================
+app.UseAuthentication();
+
 app.UseAuthorization();
 
-// =========================
-// 8. Controller
-// =========================
 app.MapControllers();
 
 app.Run();
