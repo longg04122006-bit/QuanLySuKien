@@ -1,5 +1,11 @@
+using BLL;
+using DAL;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // =========================
 // 1. Đăng ký Controller
@@ -7,13 +13,43 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // =========================
-// 2. Swagger / OpenAPI
+// 2. Đăng ký JWT Authentication
+// =========================
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
+
+// =========================
+// 2. Đăng ký DAL
+// =========================
+builder.Services.AddScoped<EventDAL>();
+builder.Services.AddScoped<EventBLL>();
+builder.Services.AddScoped<UserDAL>();
+builder.Services.AddScoped<DAL.Helper.DatabaseHelper>();
+
+// =========================
+// 3. Swagger
 // =========================
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // =========================
-// 3. CORS
+// 4. CORS
 // =========================
 builder.Services.AddCors(options =>
 {
@@ -28,7 +64,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // =========================
-// 4. Swagger
+// 5. Swagger
 // =========================
 if (app.Environment.IsDevelopment())
 {
@@ -37,22 +73,22 @@ if (app.Environment.IsDevelopment())
 }
 
 // =========================
-// 5. HTTPS
+// 6. HTTPS
 // =========================
 app.UseHttpsRedirection();
 
 // =========================
-// 6. CORS
+// 7. CORS
 // =========================
 app.UseCors("AllowAll");
 
 // =========================
-// 7. Authorization
+// 8. Authorization
 // =========================
 app.UseAuthorization();
 
 // =========================
-// 8. Controller
+// 9. Controller
 // =========================
 app.MapControllers();
 
