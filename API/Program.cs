@@ -59,8 +59,16 @@ builder.Services.AddScoped<EventCategoryDAL>();
 builder.Services.AddScoped<EventCategoryBLL>();
 builder.Services.AddScoped<PaymentDAL>();
 builder.Services.AddScoped<PaymentBLL>();
-
-
+builder.Services.AddScoped<InvoiceDAL>();
+builder.Services.AddScoped<InvoiceBLL>();
+builder.Services.AddScoped<CheckInDAL>();
+builder.Services.AddScoped<CheckInBLL>();
+builder.Services.AddScoped<NotificationDAL>();
+builder.Services.AddScoped<NotificationBLL>();
+builder.Services.AddScoped<VenueDAL>();
+builder.Services.AddScoped<VenueBLL>();
+builder.Services.AddScoped<RoleDAL>();
+builder.Services.AddScoped<RoleBLL>();
 builder.Services.AddScoped<DAL.Helper.DatabaseHelper>();
 
 // Swagger
