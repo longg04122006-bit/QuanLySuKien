@@ -50,7 +50,8 @@ builder.Services.AddScoped<UserDAL>();
 
 builder.Services.AddScoped<TicketDAL>();
 builder.Services.AddScoped<TicketBLL>();
-
+builder.Services.AddScoped<AttendeeDAL>();
+builder.Services.AddScoped<AttendeeBLL>();
 builder.Services.AddScoped<BookingDetailDAL>();
 builder.Services.AddScoped<BookingDetailBLL>();
 builder.Services.AddScoped<BookingDAL>();
@@ -71,6 +72,8 @@ builder.Services.AddScoped<RoleDAL>();
 builder.Services.AddScoped<RoleBLL>();
 builder.Services.AddScoped<DAL.Helper.DatabaseHelper>();
 
+builder.Services.AddScoped<AuditLogDAL>();
+builder.Services.AddScoped<AuditLogBLL>();
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Model;
 
@@ -139,16 +140,14 @@ namespace DAL
                     BookingId,
                     TicketTypeId,
                     Quantity,
-                    UnitPrice,
-                    Amount
+                    UnitPrice
                 )
                 VALUES
                 (
                     @BookingId,
                     @TicketTypeId,
                     @Quantity,
-                    @UnitPrice,
-                    @Amount
+                    @UnitPrice
                 );
 
                 SELECT CAST(SCOPE_IDENTITY() AS INT);";
@@ -172,10 +171,6 @@ namespace DAL
                 "@UnitPrice",
                 detail.UnitPrice);
 
-            cmd.Parameters.AddWithValue(
-                "@Amount",
-                detail.Amount);
-
             conn.Open();
 
             return Convert.ToInt32(
@@ -194,8 +189,7 @@ namespace DAL
                     BookingId = @BookingId,
                     TicketTypeId = @TicketTypeId,
                     Quantity = @Quantity,
-                    UnitPrice = @UnitPrice,
-                    Amount = @Amount
+                    UnitPrice = @UnitPrice
                 WHERE BookingDetailId = @BookingDetailId";
 
             using SqlCommand cmd =
@@ -220,10 +214,6 @@ namespace DAL
             cmd.Parameters.AddWithValue(
                 "@UnitPrice",
                 detail.UnitPrice);
-
-            cmd.Parameters.AddWithValue(
-                "@Amount",
-                detail.Amount);
 
             conn.Open();
 
@@ -253,3 +243,6 @@ namespace DAL
         }
     }
 }
+
+
+
