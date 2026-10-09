@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Model;
 using System.Data;
@@ -125,6 +126,53 @@ namespace DAL
             return Convert.ToInt64(cmd.ExecuteScalar());
         }
 
+        // Cập nhật AuditLog
+        public bool Update(AuditLog auditLog)
+        {
+            using SqlConnection conn = new SqlConnection(_connectionString);
+
+            string sql = @"UPDATE AuditLogs
+                           SET
+                               UserId = @UserId,
+                               Action = @Action,
+                               TableName = @TableName,
+                               RecordId = @RecordId,
+                               OldData = @OldData,
+                               NewData = @NewData,
+                               IPAddress = @IPAddress
+                           WHERE AuditLogId = @AuditLogId";
+
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.Add("@AuditLogId", SqlDbType.BigInt)
+                .Value = auditLog.AuditLogId;
+
+            cmd.Parameters.Add("@UserId", SqlDbType.Int)
+                .Value = (object?)auditLog.UserId ?? DBNull.Value;
+
+            cmd.Parameters.Add("@Action", SqlDbType.NVarChar, 100)
+                .Value = auditLog.Action;
+
+            cmd.Parameters.Add("@TableName", SqlDbType.NVarChar, 100)
+                .Value = (object?)auditLog.TableName ?? DBNull.Value;
+
+            cmd.Parameters.Add("@RecordId", SqlDbType.Int)
+                .Value = (object?)auditLog.RecordId ?? DBNull.Value;
+
+            cmd.Parameters.Add("@OldData", SqlDbType.NVarChar)
+                .Value = (object?)auditLog.OldData ?? DBNull.Value;
+
+            cmd.Parameters.Add("@NewData", SqlDbType.NVarChar)
+                .Value = (object?)auditLog.NewData ?? DBNull.Value;
+
+            cmd.Parameters.Add("@IPAddress", SqlDbType.VarChar, 50)
+                .Value = (object?)auditLog.IPAddress ?? DBNull.Value;
+
+            conn.Open();
+
+            return cmd.ExecuteNonQuery() > 0;
+        }
+
         // Xóa AuditLog
         public bool Delete(long id)
         {
@@ -142,6 +190,7 @@ namespace DAL
             return cmd.ExecuteNonQuery() > 0;
         }
 
+        // Chuyển dữ liệu SQL thành Model AuditLog
         private AuditLog MapAuditLog(SqlDataReader reader)
         {
             return new AuditLog
@@ -179,3 +228,4 @@ namespace DAL
         }
     }
 }
+

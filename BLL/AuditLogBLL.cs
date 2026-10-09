@@ -32,6 +32,20 @@ namespace BLL
             return _auditLogDAL.Create(auditLog);
         }
 
+        // UPDATE
+        public bool Update(AuditLog auditLog)
+        {
+            if (auditLog == null)
+                throw new Exception("Dữ liệu AuditLog không hợp lệ");
+
+            if (auditLog.AuditLogId <= 0)
+                throw new Exception("AuditLogId phải lớn hơn 0");
+
+            Validate(auditLog);
+
+            return _auditLogDAL.Update(auditLog);
+        }
+
         public bool Delete(long id)
         {
             if (id <= 0)

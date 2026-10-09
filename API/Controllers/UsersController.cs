@@ -6,22 +6,22 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuditLogsController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private readonly AuditLogBLL _auditLogBLL;
+        private readonly UserBLL _userBLL;
 
-        public AuditLogsController(AuditLogBLL auditLogBLL)
+        public UsersController(UserBLL userBLL)
         {
-            _auditLogBLL = auditLogBLL;
+            _userBLL = userBLL;
         }
 
-        // GET: api/AuditLogs
+        // GET: api/Users
         [HttpGet]
         public IActionResult GetAll()
         {
             try
             {
-                return Ok(_auditLogBLL.GetAll());
+                return Ok(_userBLL.GetAll());
             }
             catch (Exception ex)
             {
@@ -29,23 +29,23 @@ namespace API.Controllers
             }
         }
 
-        // GET: api/AuditLogs/1
-        [HttpGet("{id:long}")]
-        public IActionResult GetById(long id)
+        // GET: api/Users/1
+        [HttpGet("{id:int}")]
+        public IActionResult GetById(int id)
         {
             try
             {
-                var auditLog = _auditLogBLL.GetById(id);
+                var user = _userBLL.GetById(id);
 
-                if (auditLog == null)
+                if (user == null)
                 {
                     return NotFound(new
                     {
-                        message = "Không tìm thấy AuditLog"
+                        message = "Không tìm thấy User"
                     });
                 }
 
-                return Ok(auditLog);
+                return Ok(user);
             }
             catch (Exception ex)
             {
@@ -53,18 +53,18 @@ namespace API.Controllers
             }
         }
 
-        // POST: api/AuditLogs
+        // POST: api/Users
         [HttpPost]
-        public IActionResult Create([FromBody] AuditLog auditLog)
+        public IActionResult Create([FromBody] User user)
         {
             try
             {
-                long id = _auditLogBLL.Create(auditLog);
+                int id = _userBLL.Create(user);
 
                 return Ok(new
                 {
-                    message = "Thêm AuditLog thành công",
-                    auditLogId = id
+                    message = "Thêm User thành công",
+                    userId = id
                 });
             }
             catch (Exception ex)
@@ -73,29 +73,27 @@ namespace API.Controllers
             }
         }
 
-        // PUT: api/AuditLogs/1
-        [HttpPut("{id:long}")]
-        public IActionResult Update(
-            long id,
-            [FromBody] AuditLog auditLog)
+        // PUT: api/Users/1
+        [HttpPut("{id:int}")]
+        public IActionResult Update(int id, [FromBody] User user)
         {
             try
             {
-                auditLog.AuditLogId = id;
+                user.UserId = id;
 
-                bool result = _auditLogBLL.Update(auditLog);
+                bool result = _userBLL.Update(user);
 
                 if (!result)
                 {
                     return NotFound(new
                     {
-                        message = "Không tìm thấy AuditLog để cập nhật"
+                        message = "Không tìm thấy User để cập nhật"
                     });
                 }
 
                 return Ok(new
                 {
-                    message = "Cập nhật AuditLog thành công"
+                    message = "Cập nhật User thành công"
                 });
             }
             catch (Exception ex)
@@ -104,25 +102,25 @@ namespace API.Controllers
             }
         }
 
-        // DELETE: api/AuditLogs/1
-        [HttpDelete("{id:long}")]
-        public IActionResult Delete(long id)
+        // DELETE: api/Users/1
+        [HttpDelete("{id:int}")]
+        public IActionResult Delete(int id)
         {
             try
             {
-                bool result = _auditLogBLL.Delete(id);
+                bool result = _userBLL.Delete(id);
 
                 if (!result)
                 {
                     return NotFound(new
                     {
-                        message = "Không tìm thấy AuditLog để xóa"
+                        message = "Không tìm thấy User để xóa"
                     });
                 }
 
                 return Ok(new
                 {
-                    message = "Xóa AuditLog thành công"
+                    message = "Xóa User thành công"
                 });
             }
             catch (Exception ex)

@@ -71,7 +71,8 @@ builder.Services.AddScoped<VenueBLL>();
 builder.Services.AddScoped<RoleDAL>();
 builder.Services.AddScoped<RoleBLL>();
 builder.Services.AddScoped<DAL.Helper.DatabaseHelper>();
-
+builder.Services.AddScoped<UserDAL>();
+builder.Services.AddScoped<UserBLL>();
 builder.Services.AddScoped<AuditLogDAL>();
 builder.Services.AddScoped<AuditLogBLL>();
 // Swagger
