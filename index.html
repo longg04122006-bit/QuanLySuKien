@@ -1,135 +1,1157 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuanLySuKien</title>
+    <title>Hệ Thống Quản Lý Sự Kiện - QLSK</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <aside class="sidebar">
-        <h2>QLSK</h2>
-        <p>QUẢN LÝ SỰ KIỆN</p>
-        <button class="active" onclick="showPage('Tổng quan')">▦ Tổng quan</button>
-        <button onclick="showPage('Sự kiện')">▣ Sự kiện</button>
-        <button onclick="showPage('Địa điểm')">⌂ Địa điểm</button>
-        <button onclick="showPage('Loại vé')">▤ Loại vé</button>
-        <button onclick="showPage('Đặt vé')">▧ Đặt vé</button>
-        <button onclick="showPage('Người dùng')">♙ Người dùng</button>
-        <button onclick="showPage('Thanh toán')">＄ Thanh toán</button>
-    </aside>
-
-    <main>
-        <header>
-            <div>
-                <small>HỆ THỐNG QUẢN TRỊ</small>
-                <h1 id="pageTitle">Tổng quan</h1>
-            </div>
-            <span class="admin">AD &nbsp; Quản trị viên</span>
-        </header>
-
-        <section class="welcome">
-            <p>CHÀO MỪNG BẠN!</p>
-            <h2>Quản lý sự kiện dễ dàng hơn</h2>
-            <span>Theo dõi hoạt động hệ thống tại đây.</span>
-        </section>
-
-        <section class="stats">
-            <article><span>Tổng sự kiện</span><h2 id="count">3</h2></article>
-            <article><span>Loại vé</span><h2>0</h2></article>
-            <article><span>Đơn đặt vé</span><h2>0</h2></article>
-        </section>
-
-        <section class="panel">
-            <div class="panelHeader">
-                <div>
-                    <h2>Danh sách sự kiện</h2>
-                    <p>Dữ liệu minh họa ban đầu</p>
-                </div>
-                <button class="add" onclick="addEvent()">+ Thêm sự kiện</button>
-            </div>
-
-            <input id="search" placeholder="Tìm kiếm sự kiện..."
-                   oninput="renderEvents()">
-
-            <table>
-             <thead>
-  <tr>
-    <th>MÃ</th>
-    <th>TÊN SỰ KIỆN</th>
-    <th>ĐỊA ĐIỂM</th>
-    <th>TRẠNG THÁI</th>
-    <th>THAO TÁC</th>
-  </tr>
-</thead>
-                <tbody id="eventList"></tbody>
-            </table>
-            <p id="message">Đây là dữ liệu mẫu, chưa kết nối Backend.</p>
-     
-        </section>
-
-        <!-- Bieu mau them/sua su kien -->
-        <section class="panel" id="eventFormPanel" hidden>
-            <div class="panelHeader">
-                <div>
-                    <h2 id="eventFormTitle">Thêm sự kiện</h2>
-                    <p>Nhập thông tin sự kiện bên dưới</p>
+    <div class="app-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">🎟️</div>
+                <div class="brand-text">
+                    <h2>QLSK</h2>
+                    <p>QUẢN LÝ SỰ KIỆN</p>
                 </div>
             </div>
 
-            <form id="eventForm">
-                <input type="hidden" id="eventId">
+            <nav class="nav-menu" id="mainNavMenu">
+                <button class="nav-item active" data-page="dashboard" data-roles="Admin,Manager,User,Guest" onclick="showPage('dashboard')">
+                    <span class="nav-icon">▦</span>
+                    <span class="nav-label">Tổng quan</span>
+                </button>
+                <button class="nav-item" data-page="events" data-roles="Admin,Manager,User,Guest" onclick="showPage('events')">
+                    <span class="nav-icon">▣</span>
+                    <span class="nav-label">Sự kiện</span>
+                </button>
+                <button class="nav-item" data-page="categories" data-roles="Admin,Manager" onclick="showPage('categories')">
+                    <span class="nav-icon">🏷️</span>
+                    <span class="nav-label">Danh mục sự kiện</span>
+                </button>
+                <button class="nav-item" data-page="venues" data-roles="Admin,Manager" onclick="showPage('venues')">
+                    <span class="nav-icon">⌂</span>
+                    <span class="nav-label">Địa điểm</span>
+                </button>
+                <button class="nav-item" data-page="ticket-types" data-roles="Admin,Manager" onclick="showPage('ticket-types')">
+                    <span class="nav-icon">▤</span>
+                    <span class="nav-label">Loại vé</span>
+                </button>
+                <button class="nav-item" data-page="bookings" data-roles="Admin,Manager,User" onclick="showPage('bookings')">
+                    <span class="nav-icon">▧</span>
+                    <span class="nav-label" id="navLabelBookings">Đơn đặt vé</span>
+                </button>
+                <button class="nav-item" data-page="payments" data-roles="Admin,Manager" onclick="showPage('payments')">
+                    <span class="nav-icon">＄</span>
+                    <span class="nav-label">Thanh toán</span>
+                </button>
+                <button class="nav-item" data-page="tickets" data-roles="Admin,Manager,User" onclick="showPage('tickets')">
+                    <span class="nav-icon">🎫</span>
+                    <span class="nav-label" id="navLabelTickets">Vé & Check-in</span>
+                </button>
+                <button class="nav-item" data-page="users" data-roles="Admin" onclick="showPage('users')">
+                    <span class="nav-icon">♙</span>
+                    <span class="nav-label">Người dùng</span>
+                </button>
+            </nav>
 
-                <label for="eventName">Tên sự kiện *</label>
-                <input id="eventName" type="text" required
-                       placeholder="Nhập tên sự kiện">
+            <div class="sidebar-footer">
+                <div class="gateway-indicator" onclick="openGatewayModal()" title="Bấm để cấu hình Gateway URL">
+                    <span class="status-dot online" id="gatewayStatusDot"></span>
+                    <div class="gateway-info">
+                        <small>API Gateway</small>
+                        <span id="gatewayUrlLabel">https://localhost:7127</span>
+                    </div>
+                    <span class="settings-icon">⚙️</span>
+                </div>
+            </div>
+        </aside>
 
-                <label for="categoryId">Mã danh mục *</label>
-                <input id="categoryId" type="number" min="1" required
-                       placeholder="Ví dụ: 1">
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+            <!-- TOP NAVBAR -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+                    <div>
+                        <small class="breadcrumb">HỆ THỐNG QUẢN TRỊ</small>
+                        <h1 class="page-title" id="pageTitle">Tổng quan hệ thống</h1>
+                    </div>
+                </div>
 
-                <label for="venueId">Mã địa điểm *</label>
-                <input id="venueId" type="number" min="1" required
-                       placeholder="Ví dụ: 1">
+                <div class="topbar-right">
+                    <div class="user-profile" id="userProfileArea">
+                        <!-- Populated by JavaScript -->
+                        <button class="btn btn-primary btn-sm" onclick="openLoginModal()">🔑 Đăng nhập</button>
+                    </div>
+                </div>
+            </header>
 
-                <label for="organizerId">Mã người tổ chức *</label>
-                <input id="organizerId" type="number" min="1" required
-                       placeholder="Ví dụ: 1">
+            <!-- MAIN CONTENT AREA -->
+            <main class="content-area">
+                <!-- 1. TỔNG QUAN (DASHBOARD) -->
+                <div class="page-view active" id="view-dashboard">
+                    <section class="hero-banner">
+                        <div class="hero-content">
+                            <span class="hero-tag" id="heroRoleTag">BẢNG ĐIỀU KHIỂN TRUNG TÂM</span>
+                            <h2 id="heroHeading">Chào mừng đến với Hệ Thống Quản Lý Sự Kiện!</h2>
+                            <p id="heroDescription">Kết nối trực tiếp qua <strong>API Gateway</strong> (YARP) đến Backend .NET Core API.</p>
+                        </div>
+                        <div class="hero-actions">
+                            <button class="btn btn-light" onclick="refreshDashboard()">🔄 Làm mới dữ liệu</button>
+                            <button class="btn btn-accent" id="dashCreateEventBtn" onclick="openEventModal()">+ Tạo sự kiện mới</button>
+                            <button class="btn btn-primary" id="dashBrowseEventsBtn" onclick="showPage('events')" style="display:none;">🎟️ Khám phá sự kiện</button>
+                        </div>
+                    </section>
 
-                <label for="startDate">Ngày bắt đầu *</label>
-                <input id="startDate" type="datetime-local" required>
+                    <!-- KPI STATS -->
+                    <section class="stats-grid">
+                        <div class="stat-card" id="statCardEvents" onclick="showPage('events')">
+                            <div class="stat-icon bg-blue">▣</div>
+                            <div class="stat-meta">
+                                <span>Tổng sự kiện</span>
+                                <h3 id="statTotalEvents">0</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card" id="statCardVenues" onclick="showPage('venues')">
+                            <div class="stat-icon bg-green">⌂</div>
+                            <div class="stat-meta">
+                                <span>Địa điểm</span>
+                                <h3 id="statTotalVenues">0</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card" id="statCardTicketTypes" onclick="showPage('ticket-types')">
+                            <div class="stat-icon bg-purple">▤</div>
+                            <div class="stat-meta">
+                                <span>Loại vé</span>
+                                <h3 id="statTotalTicketTypes">0</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card" id="statCardBookings" onclick="showPage('bookings')">
+                            <div class="stat-icon bg-orange">▧</div>
+                            <div class="stat-meta">
+                                <span id="statBookingsLabel">Đơn đặt vé</span>
+                                <h3 id="statTotalBookings">0</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card" id="statCardPayments" onclick="showPage('payments')">
+                            <div class="stat-icon bg-emerald">＄</div>
+                            <div class="stat-meta">
+                                <span>Doanh thu thanh toán</span>
+                                <h3 id="statTotalRevenue">0 đ</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card" id="statCardUsers" onclick="showPage('users')">
+                            <div class="stat-icon bg-pink">♙</div>
+                            <div class="stat-meta">
+                                <span>Người dùng</span>
+                                <h3 id="statTotalUsers">0</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card" id="statCardMyTickets" style="display:none;" onclick="showPage('tickets')">
+                            <div class="stat-icon bg-purple">🎫</div>
+                            <div class="stat-meta">
+                                <span>Vé của tôi</span>
+                                <h3 id="statTotalMyTickets">0</h3>
+                            </div>
+                        </div>
+                    </section>
 
-                <label for="endDate">Ngày kết thúc *</label>
-                <input id="endDate" type="datetime-local" required>
+                    <!-- RECENT SECTION -->
+                    <div class="dashboard-grid">
+                        <section class="panel">
+                            <div class="panel-header">
+                                <div>
+                                    <h3>Sự kiện mới nhất</h3>
+                                    <p>Các sự kiện đang và sắp diễn ra trong hệ thống</p>
+                                </div>
+                                <button class="btn btn-secondary btn-sm" onclick="showPage('events')">Xem tất cả →</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Mã</th>
+                                            <th>Tên sự kiện</th>
+                                            <th>Thời gian bắt đầu</th>
+                                            <th>Trạng thái</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dashRecentEvents">
+                                        <tr><td colspan="4" class="text-center text-muted">Đang tải...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
 
-                <label for="description">Mô tả</label>
-                <textarea id="description" rows="3"
-                          placeholder="Mô tả sự kiện"></textarea>
+                        <section class="panel">
+                            <div class="panel-header">
+                                <div>
+                                    <h3>Đơn đặt vé gần đây</h3>
+                                    <p>Giao dịch đặt vé mới nhất</p>
+                                </div>
+                                <button class="btn btn-secondary btn-sm" onclick="showPage('bookings')">Xem tất cả →</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Mã đơn</th>
+                                            <th>User ID</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Trạng thái</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dashRecentBookings">
+                                        <tr><td colspan="4" class="text-center text-muted">Đang tải...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+                    </div>
+                </div>
 
-                <label for="eventStatus">Trạng thái</label>
-                <select id="eventStatus">
-    <option value="OPEN">Đang mở</option>
-    <option value="UPCOMING">Sắp diễn ra</option>
-    <option value="CLOSED">Đã đóng</option>
-    <option value="FINISHED">Đã kết thúc</option>
-    <option value="CANCELLED">Đã hủy</option>
-</select>
+                <!-- 2. SỰ KIỆN (EVENTS) -->
+                <div class="page-view" id="view-events">
+                    <section class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2 id="eventsHeaderTitle">Quản lý sự kiện</h2>
+                                <p id="eventsHeaderSubtitle">Xem danh sách, tìm kiếm, lọc theo trạng thái, thêm mới, cập nhật và xóa sự kiện</p>
+                            </div>
+                            <button class="btn btn-primary" id="btnCreateEvent" onclick="openEventModal()">+ Thêm sự kiện</button>
+                        </div>
 
-                <label for="imageUrl">Đường dẫn ảnh</label>
-                <input id="imageUrl" type="url"
-                       placeholder="https://...">
+                        <div class="filter-bar">
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="eventSearchInput" placeholder="Tìm theo tên sự kiện hoặc ID..." oninput="filterEvents()">
+                            </div>
+                            <div class="filter-actions">
+                                <select id="eventStatusFilter" onchange="filterEvents()">
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="OPEN">Đang mở</option>
+                                    <option value="UPCOMING">Sắp diễn ra</option>
+                                    <option value="CLOSED">Đã đóng</option>
+                                    <option value="FINISHED">Đã kết thúc</option>
+                                    <option value="CANCELLED">Đã hủy</option>
+                                </select>
+                                <button class="btn btn-secondary" onclick="loadEvents()">🔄 Tải lại</button>
+                            </div>
+                        </div>
 
-                <div class="formActions">
-                    <button type="submit" class="add">Lưu sự kiện</button>
-                    <button type="button" id="cancelEventForm"
-                            class="cancelButton">Hủy</button>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>MÃ</th>
+                                        <th>TÊN SỰ KIỆN</th>
+                                        <th>DANH MỤC</th>
+                                        <th>ĐỊA ĐIỂM</th>
+                                        <th>THỜI GIAN</th>
+                                        <th>TRẠNG THÁI</th>
+                                        <th class="text-right">THAO TÁC</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="eventTableBody">
+                                    <tr><td colspan="7" class="text-center text-muted">Đang tải dữ liệu sự kiện...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- 3. DANH MỤC SỰ KIỆN (CATEGORIES) -->
+                <div class="page-view" id="view-categories">
+                    <section class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2>Danh mục sự kiện</h2>
+                                <p>Quản lý các thể loại sự kiện (Âm nhạc, Hội thảo, Công nghệ, Triển lãm...)</p>
+                            </div>
+                            <button class="btn btn-primary" id="btnCreateCategory" onclick="openCategoryModal()">+ Thêm danh mục</button>
+                        </div>
+
+                        <div class="filter-bar">
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="categorySearchInput" placeholder="Tìm kiếm danh mục..." oninput="filterCategories()">
+                            </div>
+                            <button class="btn btn-secondary" onclick="loadCategories()">🔄 Tải lại</button>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>MÃ</th>
+                                        <th>TÊN DANH MỤC</th>
+                                        <th>MÔ TẢ</th>
+                                        <th class="text-right">THAO TÁC</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categoryTableBody">
+                                    <tr><td colspan="4" class="text-center text-muted">Đang tải danh mục...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- 4. ĐỊA ĐIỂM (VENUES) -->
+                <div class="page-view" id="view-venues">
+                    <section class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2>Quản lý địa điểm</h2>
+                                <p>Danh sách các trung tâm hội nghị, nhà thi đấu, sân vận động tổ chức sự kiện</p>
+                            </div>
+                            <button class="btn btn-primary" id="btnCreateVenue" onclick="openVenueModal()">+ Thêm địa điểm</button>
+                        </div>
+
+                        <div class="filter-bar">
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="venueSearchInput" placeholder="Tìm theo tên địa điểm, thành phố..." oninput="filterVenues()">
+                            </div>
+                            <button class="btn btn-secondary" onclick="loadVenues()">🔄 Tải lại</button>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>MÃ</th>
+                                        <th>TÊN ĐỊA ĐIỂM</th>
+                                        <th>ĐỊA CHỈ</th>
+                                        <th>THÀNH PHỐ</th>
+                                        <th>SỨC CHỨA</th>
+                                        <th>MÔ TẢ</th>
+                                        <th class="text-right">THAO TÁC</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="venueTableBody">
+                                    <tr><td colspan="7" class="text-center text-muted">Đang tải địa điểm...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- 5. LOẠI VÉ (TICKET TYPES) -->
+                <div class="page-view" id="view-ticket-types">
+                    <section class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2>Quản lý loại vé</h2>
+                                <p>Cấu hình các hạng vé (VIP, Standard, Early Bird, VVIP...) cho từng sự kiện</p>
+                            </div>
+                            <button class="btn btn-primary" id="btnCreateTicketType" onclick="openTicketTypeModal()">+ Thêm loại vé</button>
+                        </div>
+
+                        <div class="filter-bar">
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="ticketTypeSearchInput" placeholder="Tìm theo tên vé, mã sự kiện..." oninput="filterTicketTypes()">
+                            </div>
+                            <button class="btn btn-secondary" onclick="loadTicketTypes()">🔄 Tải lại</button>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>MÃ VÉ</th>
+                                        <th>SỰ KIỆN</th>
+                                        <th>HẠNG VÉ</th>
+                                        <th>GIÁ BÁN</th>
+                                        <th>SỐ LƯỢNG</th>
+                                        <th>ĐÃ BÁN</th>
+                                        <th>CÒN LẠI</th>
+                                        <th>THỜI GIAN MỞ BÁN</th>
+                                        <th class="text-right">THAO TÁC</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ticketTypeTableBody">
+                                    <tr><td colspan="9" class="text-center text-muted">Đang tải loại vé...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- 6. ĐẶT VÉ (BOOKINGS) -->
+                <div class="page-view" id="view-bookings">
+                    <section class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2 id="bookingHeaderTitle">Quản lý đơn đặt vé</h2>
+                                <p id="bookingHeaderSubtitle">Theo dõi danh sách đặt vé, trạng thái thanh toán và thông tin khách hàng</p>
+                            </div>
+                            <button class="btn btn-primary" id="btnCreateBooking" onclick="openBookingModal()">+ Tạo đơn đặt vé</button>
+                        </div>
+
+                        <div class="filter-bar">
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="bookingSearchInput" placeholder="Tìm mã đơn (BK...), ID khách hàng..." oninput="filterBookings()">
+                            </div>
+                            <div class="filter-actions">
+                                <select id="bookingStatusFilter" onchange="filterBookings()">
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="Pending">Chờ xử lý (Pending)</option>
+                                    <option value="Paid">Đã thanh toán (Paid)</option>
+                                    <option value="Cancelled">Đã hủy (Cancelled)</option>
+                                    <option value="Refunded">Hoàn tiền (Refunded)</option>
+                                </select>
+                                <button class="btn btn-secondary" onclick="loadBookings()">🔄 Tải lại</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>MÃ ĐƠN</th>
+                                        <th>MÃ CODE</th>
+                                        <th>USER ID</th>
+                                        <th>NGÀY ĐẶT</th>
+                                        <th>TỔNG TIỀN</th>
+                                        <th>TRẠNG THÁI</th>
+                                        <th class="text-right">THAO TÁC</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingTableBody">
+                                    <tr><td colspan="7" class="text-center text-muted">Đang tải đơn đặt vé...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- 7. THANH TOÁN (PAYMENTS) -->
+                <div class="page-view" id="view-payments">
+                    <section class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2>Lịch sử thanh toán</h2>
+                                <p>Quản lý các giao dịch thanh toán vé từ cổng thanh toán hoặc tiền mặt</p>
+                            </div>
+                            <button class="btn btn-primary" id="btnCreatePayment" onclick="openPaymentModal()">+ Thêm thanh toán</button>
+                        </div>
+
+                        <div class="filter-bar">
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="paymentSearchInput" placeholder="Tìm mã thanh toán, mã đơn, giao dịch..." oninput="filterPayments()">
+                            </div>
+                            <div class="filter-actions">
+                                <select id="paymentStatusFilter" onchange="filterPayments()">
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="Success">Thành công (Success)</option>
+                                    <option value="Pending">Chờ xử lý (Pending)</option>
+                                    <option value="Failed">Thất bại (Failed)</option>
+                                    <option value="Refunded">Hoàn tiền (Refunded)</option>
+                                </select>
+                                <button class="btn btn-secondary" onclick="loadPayments()">🔄 Tải lại</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>MÃ TT</th>
+                                        <th>MÃ GD</th>
+                                        <th>MÃ ĐƠN</th>
+                                        <th>SỐ TIỀN</th>
+                                        <th>PHƯƠNG THỨC</th>
+                                        <th>NGÀY THANH TOÁN</th>
+                                        <th>TRẠNG THÁI</th>
+                                        <th class="text-right">THAO TÁC</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentTableBody">
+                                    <tr><td colspan="8" class="text-center text-muted">Đang tải giao dịch...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- 8. VÉ & CHECK-IN (TICKETS & CHECK-IN) -->
+                <div class="page-view" id="view-tickets">
+                    <section class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2 id="ticketHeaderTitle">Vé tham dự & Điểm danh (Check-In)</h2>
+                                <p id="ticketHeaderSubtitle">Xem danh sách vé điện tử đã phát hành và thực hiện check-in vào cổng</p>
+                            </div>
+                            <button class="btn btn-secondary" onclick="loadTickets()">🔄 Tải lại vé</button>
+                        </div>
+
+                        <div class="filter-bar">
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="ticketSearchInput" placeholder="Tìm theo mã vé, tên khách, email..." oninput="filterTickets()">
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>MÃ VÉ</th>
+                                        <th>CODE</th>
+                                        <th>SỰ KIỆN</th>
+                                        <th>KHÁCH HÀNG</th>
+                                        <th>EMAIL</th>
+                                        <th>TRẠNG THÁI CHECK-IN</th>
+                                        <th class="text-right">THAO TÁC</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ticketTableBody">
+                                    <tr><td colspan="7" class="text-center text-muted">Đang tải danh sách vé...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- 9. NGƯỜI DÙNG (USERS) -->
+                <div class="page-view" id="view-users">
+                    <section class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2>Quản lý người dùng</h2>
+                                <p>Danh sách tài khoản quản trị viên, người tổ chức và khách tham gia</p>
+                            </div>
+                            <button class="btn btn-primary" id="btnCreateUser" onclick="openUserModal()">+ Thêm người dùng</button>
+                        </div>
+
+                        <div class="filter-bar">
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="userSearchInput" placeholder="Tìm theo username, họ tên, email..." oninput="filterUsers()">
+                            </div>
+                            <div class="filter-actions">
+                                <select id="userRoleFilter" onchange="filterUsers()">
+                                    <option value="">Tất cả vai trò</option>
+                                    <option value="1">Quản trị viên (Admin)</option>
+                                    <option value="2">Người quản lý (Manager)</option>
+                                    <option value="3">Khách hàng (User)</option>
+                                </select>
+                                <button class="btn btn-secondary" onclick="loadUsers()">🔄 Tải lại</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>MÃ</th>
+                                        <th>TÀI KHOẢN</th>
+                                        <th>HỌ VÀ TÊN</th>
+                                        <th>EMAIL</th>
+                                        <th>SỐ ĐIỆN THOẠI</th>
+                                        <th>VAI TRÒ</th>
+                                        <th>TRẠNG THÁI</th>
+                                        <th class="text-right">THAO TÁC</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userTableBody">
+                                    <tr><td colspan="8" class="text-center text-muted">Đang tải người dùng...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- MODAL: LOGIN / AUTH -->
+    <div class="modal-backdrop" id="loginModal" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Đăng nhập hệ thống</h3>
+                <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="modal-body">
+                    <p class="modal-desc">Đăng nhập tài khoản để nhận JWT Token và thực hiện các chức năng theo đúng phân quyền (Admin, Manager, User).</p>
+
+                    <!-- QUICK ROLE LOGIN -->
+                    <div class="quick-login-box">
+                        <small style="display:block;margin-bottom:6px;font-weight:600;color:var(--text-muted);">
+                            ⚡ Chọn nhanh vai trò để kiểm tra phân quyền:
+                        </small>
+                        <div class="quick-login-grid">
+                            <button type="button" class="btn-quick-role role-admin" onclick="quickLogin('admin', '123456')">
+                                <span>👑 Admin</span>
+                                <small>Toàn quyền hệ thống</small>
+                            </button>
+                            <button type="button" class="btn-quick-role role-manager" onclick="quickLogin('manager', '123456')">
+                                <span>👔 Manager</span>
+                                <small>Quản lý sự kiện, vé</small>
+                            </button>
+                            <button type="button" class="btn-quick-role role-user" onclick="quickLogin('user', '123456')">
+                                <span>👤 User</span>
+                                <small>Khách đặt & xem vé</small>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginUsername">Tên tài khoản *</label>
+                        <input type="text" id="loginUsername" required placeholder="Ví dụ: admin / manager / user">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Mật khẩu *</label>
+                        <input type="password" id="loginPassword" required placeholder="Nhập mật khẩu (Mặc định: 123456)">
+                    </div>
+
+                    <div class="token-manual-section">
+                        <div class="token-toggle" onclick="toggleManualTokenInput()">
+                            <span>Hoặc dán JWT Token thủ công (nếu có sẵn) ▼</span>
+                        </div>
+                        <div id="manualTokenArea" hidden>
+                            <textarea id="manualJwtToken" rows="3" placeholder="Dán Bearer JWT token vào đây..."></textarea>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="applyManualToken()">Lưu token thủ công</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('loginModal')">Đóng</button>
+                    <button type="submit" class="btn btn-primary" id="loginSubmitBtn">Đăng nhập</button>
                 </div>
             </form>
-        </section>
+        </div>
+    </div>
 
-    </main>
+    <!-- MODAL: EVENT (THÊM / SỬA SỰ KIỆN) -->
+    <div class="modal-backdrop" id="eventModal" hidden>
+        <div class="modal-card modal-lg">
+            <div class="modal-header">
+                <h3 id="eventModalTitle">Thêm sự kiện mới</h3>
+                <button class="modal-close" onclick="closeModal('eventModal')">✕</button>
+            </div>
+            <form id="eventForm" onsubmit="handleSaveEvent(event)">
+                <input type="hidden" id="eventFormId">
+                <div class="modal-body form-grid">
+                    <div class="form-group span-2">
+                        <label for="eventName">Tên sự kiện *</label>
+                        <input type="text" id="eventName" required placeholder="Nhập tên sự kiện">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventCategorySelect">Danh mục sự kiện *</label>
+                        <select id="eventCategorySelect" required>
+                            <option value="">-- Chọn danh mục --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventVenueSelect">Địa điểm tổ chức *</label>
+                        <select id="eventVenueSelect" required>
+                            <option value="">-- Chọn địa điểm --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventStartDate">Ngày bắt đầu *</label>
+                        <input type="datetime-local" id="eventStartDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventEndDate">Ngày kết thúc *</label>
+                        <input type="datetime-local" id="eventEndDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventOrganizerId">Mã người tổ chức (Organizer ID) *</label>
+                        <input type="number" id="eventOrganizerId" required min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventStatus">Trạng thái sự kiện *</label>
+                        <select id="eventStatus" required>
+                            <option value="OPEN">OPEN (Đang mở bán)</option>
+                            <option value="UPCOMING">UPCOMING (Sắp diễn ra)</option>
+                            <option value="CLOSED">CLOSED (Đã đóng bán)</option>
+                            <option value="FINISHED">FINISHED (Đã kết thúc)</option>
+                            <option value="CANCELLED">CANCELLED (Đã hủy)</option>
+                        </select>
+                    </div>
+                    <div class="form-group span-2">
+                        <label for="eventImageUrl">Đường dẫn hình ảnh (Image URL)</label>
+                        <input type="url" id="eventImageUrl" placeholder="https://images.unsplash.com/...">
+                    </div>
+                    <div class="form-group span-2">
+                        <label for="eventDescription">Mô tả chi tiết</label>
+                        <textarea id="eventDescription" rows="4" placeholder="Mô tả nội dung chương trình, khách mời, thể lệ..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('eventModal')">Hủy</button>
+                    <button type="submit" class="btn btn-primary" id="eventSubmitBtn">Lưu sự kiện</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: CATEGORY (DANH MỤC) -->
+    <div class="modal-backdrop" id="categoryModal" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="categoryModalTitle">Thêm danh mục sự kiện</h3>
+                <button class="modal-close" onclick="closeModal('categoryModal')">✕</button>
+            </div>
+            <form id="categoryForm" onsubmit="handleSaveCategory(event)">
+                <input type="hidden" id="categoryFormId">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="categoryName">Tên danh mục *</label>
+                        <input type="text" id="categoryName" required placeholder="Ví dụ: Âm nhạc, Thể thao, Hội thảo...">
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryDescription">Mô tả</label>
+                        <textarea id="categoryDescription" rows="3" placeholder="Mô tả danh mục..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('categoryModal')">Hủy</button>
+                    <button type="submit" class="btn btn-primary" id="categorySubmitBtn">Lưu danh mục</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: VENUE (ĐỊA ĐIỂM) -->
+    <div class="modal-backdrop" id="venueModal" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="venueModalTitle">Thêm địa điểm</h3>
+                <button class="modal-close" onclick="closeModal('venueModal')">✕</button>
+            </div>
+            <form id="venueForm" onsubmit="handleSaveVenue(event)">
+                <input type="hidden" id="venueFormId">
+                <div class="modal-body form-grid">
+                    <div class="form-group span-2">
+                        <label for="venueName">Tên địa điểm *</label>
+                        <input type="text" id="venueName" required placeholder="Ví dụ: Trung tâm Hội nghị Quốc gia">
+                    </div>
+                    <div class="form-group span-2">
+                        <label for="venueAddress">Địa chỉ chi tiết *</label>
+                        <input type="text" id="venueAddress" required placeholder="Ví dụ: Đại lộ Thăng Long, Mễ Trì">
+                    </div>
+                    <div class="form-group">
+                        <label for="venueCity">Thành phố *</label>
+                        <input type="text" id="venueCity" required placeholder="Ví dụ: Hà Nội, TP.HCM">
+                    </div>
+                    <div class="form-group">
+                        <label for="venueCapacity">Sức chứa tối đa (người) *</label>
+                        <input type="number" id="venueCapacity" required min="1" placeholder="Ví dụ: 5000">
+                    </div>
+                    <div class="form-group span-2">
+                        <label for="venueDescription">Mô tả cơ sở vật chất</label>
+                        <textarea id="venueDescription" rows="3" placeholder="Âm thanh, ánh sáng, khu vực giữ xe..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('venueModal')">Hủy</button>
+                    <button type="submit" class="btn btn-primary" id="venueSubmitBtn">Lưu địa điểm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: TICKET TYPE (LOẠI VÉ) -->
+    <div class="modal-backdrop" id="ticketTypeModal" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="ticketTypeModalTitle">Thêm loại vé</h3>
+                <button class="modal-close" onclick="closeModal('ticketTypeModal')">✕</button>
+            </div>
+            <form id="ticketTypeForm" onsubmit="handleSaveTicketType(event)">
+                <input type="hidden" id="ticketTypeFormId">
+                <div class="modal-body form-grid">
+                    <div class="form-group span-2">
+                        <label for="ticketTypeEventSelect">Thuộc sự kiện *</label>
+                        <select id="ticketTypeEventSelect" required>
+                            <option value="">-- Chọn sự kiện --</option>
+                        </select>
+                    </div>
+                    <div class="form-group span-2">
+                        <label for="ticketTypeName">Tên loại vé *</label>
+                        <input type="text" id="ticketTypeName" required placeholder="Ví dụ: Vé VIP, Vé Thường, Early Bird">
+                    </div>
+                    <div class="form-group">
+                        <label for="ticketTypePrice">Giá vé (VNĐ) *</label>
+                        <input type="number" id="ticketTypePrice" required min="0" step="1000" placeholder="Ví dụ: 250000">
+                    </div>
+                    <div class="form-group">
+                        <label for="ticketTypeQuantity">Tổng số lượng vé *</label>
+                        <input type="number" id="ticketTypeQuantity" required min="1" placeholder="Ví dụ: 500">
+                    </div>
+                    <div class="form-group">
+                        <label for="ticketTypeSoldQuantity">Số vé đã bán</label>
+                        <input type="number" id="ticketTypeSoldQuantity" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="ticketTypeSaleStart">Thời gian mở bán</label>
+                        <input type="datetime-local" id="ticketTypeSaleStart">
+                    </div>
+                    <div class="form-group span-2">
+                        <label for="ticketTypeSaleEnd">Thời gian kết thúc bán</label>
+                        <input type="datetime-local" id="ticketTypeSaleEnd">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('ticketTypeModal')">Hủy</button>
+                    <button type="submit" class="btn btn-primary" id="ticketTypeSubmitBtn">Lưu loại vé</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: BOOKING (ĐẶT VÉ) -->
+    <div class="modal-backdrop" id="bookingModal" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="bookingModalTitle">Tạo đơn đặt vé</h3>
+                <button class="modal-close" onclick="closeModal('bookingModal')">✕</button>
+            </div>
+            <form id="bookingForm" onsubmit="handleSaveBooking(event)">
+                <input type="hidden" id="bookingFormId">
+                <div class="modal-body form-grid">
+                    <div class="form-group span-2">
+                        <label for="bookingCode">Mã đơn đặt vé (Booking Code) *</label>
+                        <input type="text" id="bookingCode" required placeholder="Ví dụ: BK-20261025-001">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingUserSelect">Khách hàng đặt vé *</label>
+                        <select id="bookingUserSelect" required>
+                            <option value="">-- Chọn khách hàng --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingDate">Ngày đặt *</label>
+                        <input type="datetime-local" id="bookingDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingTotalAmount">Tổng tiền (VNĐ) *</label>
+                        <input type="number" id="bookingTotalAmount" required min="0" step="1000" placeholder="Ví dụ: 500000">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingStatus">Trạng thái đơn *</label>
+                        <select id="bookingStatus" required>
+                            <option value="Pending">Pending (Chờ thanh toán)</option>
+                            <option value="Paid">Paid (Đã thanh toán)</option>
+                            <option value="Cancelled">Cancelled (Đã hủy)</option>
+                            <option value="Refunded">Refunded (Hoàn tiền)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('bookingModal')">Hủy</button>
+                    <button type="submit" class="btn btn-primary" id="bookingSubmitBtn">Lưu đơn đặt vé</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: PAYMENT (THANH TOÁN) -->
+    <div class="modal-backdrop" id="paymentModal" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="paymentModalTitle">Thêm giao dịch thanh toán</h3>
+                <button class="modal-close" onclick="closeModal('paymentModal')">✕</button>
+            </div>
+            <form id="paymentForm" onsubmit="handleSavePayment(event)">
+                <input type="hidden" id="paymentFormId">
+                <div class="modal-body form-grid">
+                    <div class="form-group span-2">
+                        <label for="paymentBookingSelect">Thuộc đơn đặt vé (Booking) *</label>
+                        <select id="paymentBookingSelect" required>
+                            <option value="">-- Chọn đơn đặt vé --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentCode">Mã thanh toán *</label>
+                        <input type="text" id="paymentCode" required placeholder="Ví dụ: PAY-2026-001">
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentAmount">Số tiền thanh toán (VNĐ) *</label>
+                        <input type="number" id="paymentAmount" required min="0" step="1000" placeholder="Ví dụ: 500000">
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentMethod">Phương thức thanh toán *</label>
+                        <select id="paymentMethod" required>
+                            <option value="Tiền mặt">Tiền mặt</option>
+                            <option value="Chuyển khoản ngân hàng">Chuyển khoản ngân hàng</option>
+                            <option value="Thẻ tín dụng (Credit Card)">Thẻ tín dụng (Credit Card)</option>
+                            <option value="Ví VNPay">Ví VNPay</option>
+                            <option value="Ví MoMo">Ví MoMo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentStatus">Trạng thái giao dịch *</label>
+                        <select id="paymentStatus" required>
+                            <option value="Success">Success (Thành công)</option>
+                            <option value="Pending">Pending (Đang xử lý)</option>
+                            <option value="Failed">Failed (Thất bại)</option>
+                            <option value="Refunded">Refunded (Hoàn tiền)</option>
+                        </select>
+                    </div>
+                    <div class="form-group span-2">
+                        <label for="paymentTransactionCode">Mã đối soát giao dịch (Transaction Code)</label>
+                        <input type="text" id="paymentTransactionCode" placeholder="Ví dụ: VNPAY-12345678">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('paymentModal')">Hủy</button>
+                    <button type="submit" class="btn btn-primary" id="paymentSubmitBtn">Lưu thanh toán</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: USER (NGƯỜI DÙNG) -->
+    <div class="modal-backdrop" id="userModal" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="userModalTitle">Thêm người dùng</h3>
+                <button class="modal-close" onclick="closeModal('userModal')">✕</button>
+            </div>
+            <form id="userForm" onsubmit="handleSaveUser(event)">
+                <input type="hidden" id="userFormId">
+                <div class="modal-body form-grid">
+                    <div class="form-group">
+                        <label for="userUsername">Tên tài khoản (Username) *</label>
+                        <input type="text" id="userUsername" required placeholder="Ví dụ: nguyen_van_a">
+                    </div>
+                    <div class="form-group">
+                        <label for="userPassword">Mật khẩu *</label>
+                        <input type="password" id="userPassword" placeholder="Nhập mật khẩu">
+                    </div>
+                    <div class="form-group span-2">
+                        <label for="userFullName">Họ và tên *</label>
+                        <input type="text" id="userFullName" required placeholder="Ví dụ: Nguyễn Văn A">
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email *</label>
+                        <input type="email" id="userEmail" required placeholder="a@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="userPhone">Số điện thoại</label>
+                        <input type="tel" id="userPhone" placeholder="0901234567">
+                    </div>
+                    <div class="form-group">
+                        <label for="userRole">Vai trò hệ thống *</label>
+                        <select id="userRole" required>
+                            <option value="1">Quản trị viên (Admin)</option>
+                            <option value="2">Người quản lý sự kiện (Manager)</option>
+                            <option value="3">Khách hàng (User)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="userIsActive">Trạng thái kích hoạt</label>
+                        <select id="userIsActive">
+                            <option value="true">Đang hoạt động</option>
+                            <option value="false">Đang bị khóa</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('userModal')">Hủy</button>
+                    <button type="submit" class="btn btn-primary" id="userSubmitBtn">Lưu người dùng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: USER BOOKING (ĐẶT VÉ SỰ KIỆN CHO KHÁCH HÀNG) -->
+    <div class="modal-backdrop" id="userBookingModal" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🎟️ Đặt vé tham gia sự kiện</h3>
+                <button class="modal-close" onclick="closeModal('userBookingModal')">✕</button>
+            </div>
+            <form id="userBookingForm" onsubmit="handleUserBookingSubmit(event)">
+                <input type="hidden" id="ubEventId">
+                <div class="modal-body form-grid">
+                    <div class="form-group span-2">
+                        <label>Sự kiện đã chọn</label>
+                        <input type="text" id="ubEventName" readonly style="background:#f1f5f9;font-weight:600;">
+                    </div>
+                    <div class="form-group span-2">
+                        <label for="ubTicketTypeSelect">Hạng vé muốn mua *</label>
+                        <select id="ubTicketTypeSelect" required onchange="calculateUserBookingTotal()">
+                            <option value="">-- Đang tải hạng vé --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ubQuantity">Số lượng vé *</label>
+                        <input type="number" id="ubQuantity" value="1" min="1" max="10" required oninput="calculateUserBookingTotal()">
+                    </div>
+                    <div class="form-group">
+                        <label>Đơn giá</label>
+                        <input type="text" id="ubUnitPrice" readonly style="background:#f1f5f9;" value="0 đ">
+                    </div>
+                    <div class="form-group span-2">
+                        <label for="ubAttendeeName">Họ và tên người tham dự *</label>
+                        <input type="text" id="ubAttendeeName" required placeholder="Nguyễn Văn A">
+                    </div>
+                    <div class="form-group">
+                        <label for="ubAttendeeEmail">Email nhận vé *</label>
+                        <input type="email" id="ubAttendeeEmail" required placeholder="email@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="ubAttendeePhone">Số điện thoại *</label>
+                        <input type="tel" id="ubAttendeePhone" required placeholder="0901234567">
+                    </div>
+                    <div class="form-group span-2" style="background:#f8fafc;padding:12px;border-radius:8px;border:1px solid #e2e8f0;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <strong>Tổng thanh toán:</strong>
+                            <strong style="color:var(--primary);font-size:18px;" id="ubTotalAmount">0 đ</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('userBookingModal')">Hủy</button>
+                    <button type="submit" class="btn btn-primary" id="ubSubmitBtn">Xác nhận đặt vé</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: USER PAYMENT (THANH TOÁN ĐƠN VÉ CHO KHÁCH HÀNG) -->
+    <div class="modal-backdrop" id="userPaymentModal" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>💳 Thanh toán đơn đặt vé</h3>
+                <button class="modal-close" onclick="closeModal('userPaymentModal')">✕</button>
+            </div>
+            <form id="userPaymentForm" onsubmit="executeUserPayment(event)">
+                <input type="hidden" id="upBookingId">
+                <div class="modal-body">
+                    <!-- Thông tin đơn hàng tóm tắt -->
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:16px;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                            <span class="text-muted">Mã đơn đặt vé:</span>
+                            <strong id="upBookingCode" style="font-family:monospace;font-size:14px;color:var(--primary);">BK-000</strong>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                            <span class="text-muted">Khách hàng:</span>
+                            <span id="upCustomerName">Nguyễn Văn A</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px dashed #cbd5e1;">
+                            <span style="font-weight:600;">Số tiền cần thanh toán:</span>
+                            <strong id="upAmount" style="font-size:22px;color:var(--success);">0 đ</strong>
+                        </div>
+                    </div>
+
+                    <!-- Chọn phương thức thanh toán -->
+                    <div class="form-group" style="margin-bottom:14px;">
+                        <label style="font-weight:600;margin-bottom:6px;display:block;">Chọn phương thức thanh toán *</label>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                            <label style="border:2px solid #e2e8f0;border-radius:8px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                <input type="radio" name="upPaymentMethod" value="Ví MoMo" checked>
+                                <span>📱 <strong>Ví MoMo</strong></span>
+                            </label>
+                            <label style="border:2px solid #e2e8f0;border-radius:8px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                <input type="radio" name="upPaymentMethod" value="Ví VNPay">
+                                <span>🏦 <strong>Ví VNPay / QR</strong></span>
+                            </label>
+                            <label style="border:2px solid #e2e8f0;border-radius:8px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                <input type="radio" name="upPaymentMethod" value="Thẻ tín dụng (Credit Card)">
+                                <span>💳 <strong>Thẻ Visa / Master</strong></span>
+                            </label>
+                            <label style="border:2px solid #e2e8f0;border-radius:8px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                <input type="radio" name="upPaymentMethod" value="Chuyển khoản ngân hàng">
+                                <span>🌐 <strong>Chuyển khoản (Bank)</strong></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div style="background:#eff6ff;border-left:4px solid var(--primary);padding:10px 14px;border-radius:6px;font-size:13px;color:#1e40af;">
+                        ℹ️ <strong>Cổng thanh toán mô phỏng:</strong> Bạn chỉ cần nhấn nút <strong>"Thanh toán ngay"</strong> bên dưới, hệ thống sẽ tự động xác nhận thanh toán thành công và cập nhật trạng thái đơn vé!
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('userPaymentModal')">Để sau</button>
+                    <button type="submit" class="btn btn-primary" id="upSubmitBtn" style="background:#059669;border-color:#059669;">
+                        ✅ Thanh toán ngay
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: TICKET DETAIL & QR CODE PREVIEW -->
+    <div class="modal-backdrop" id="ticketDetailModal" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🎫 Chi tiết vé điện tử</h3>
+                <button class="modal-close" onclick="closeModal('ticketDetailModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="ticket-preview-box">
+                    <p style="font-size:13px;opacity:0.8;margin-bottom:4px;" id="tdEventName">TÊN SỰ KIỆN</p>
+                    <div class="ticket-code-label" id="tdTicketCode">TICKET-CODE</div>
+                    <div class="ticket-qr-mock">
+                        <div style="font-size:40px;line-height:1;">📱</div>
+                        <small>MÃ VÀO CỔNG</small>
+                    </div>
+                    <div style="margin-top:10px;font-size:13.5px;" id="tdAttendeeInfo">
+                        Khách hàng: <strong>Nguyễn Văn A</strong>
+                    </div>
+                    <div style="margin-top:4px;" id="tdStatusBadge">
+                        <span class="badge badge-open">Chưa check-in</span>
+                    </div>
+                </div>
+                <p class="text-muted text-center" style="font-size:12.5px;">
+                    Xuất trình mã vé hoặc mã QR này tại cổng sự kiện để nhân viên điểm danh (Check-In).
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="closeModal('ticketDetailModal')">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: GATEWAY SETTINGS -->
+    <div class="modal-backdrop" id="gatewayModal" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Cấu hình API Gateway</h3>
+                <button class="modal-close" onclick="closeModal('gatewayModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Điều chỉnh địa chỉ API Gateway để kiểm thử (HTTPS: 7127 hoặc HTTP: 5086 nếu máy tính gặp lỗi chứng chỉ SSL localhost).</p>
+                <div class="form-group">
+                    <label for="gatewayInput">Gateway Base URL</label>
+                    <input type="url" id="gatewayInput" placeholder="https://localhost:7127">
+                </div>
+                <div class="quick-links">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setGatewayUrl('https://localhost:7127')">HTTPS (7127)</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setGatewayUrl('http://localhost:5086')">HTTP (5086)</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('gatewayModal')">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveGatewayUrl()">Lưu & Kiểm tra kết nối</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- MAIN SCRIPT -->
     <script src="script.js"></script>
 </body>
 </html>
-
