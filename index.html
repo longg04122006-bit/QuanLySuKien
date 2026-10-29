@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuanLySuKien</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <h2>QLSK</h2>
+        <p>QUẢN LÝ SỰ KIỆN</p>
+        <button class="active" onclick="showPage('Tổng quan')">▦ Tổng quan</button>
+        <button onclick="showPage('Sự kiện')">▣ Sự kiện</button>
+        <button onclick="showPage('Địa điểm')">⌂ Địa điểm</button>
+        <button onclick="showPage('Loại vé')">▤ Loại vé</button>
+        <button onclick="showPage('Đặt vé')">▧ Đặt vé</button>
+        <button onclick="showPage('Người dùng')">♙ Người dùng</button>
+        <button onclick="showPage('Thanh toán')">＄ Thanh toán</button>
+    </aside>
+
+    <main>
+        <header>
+            <div>
+                <small>HỆ THỐNG QUẢN TRỊ</small>
+                <h1 id="pageTitle">Tổng quan</h1>
+            </div>
+            <span class="admin">AD &nbsp; Quản trị viên</span>
+        </header>
+
+        <section class="welcome">
+            <p>CHÀO MỪNG BẠN!</p>
+            <h2>Quản lý sự kiện dễ dàng hơn</h2>
+            <span>Theo dõi hoạt động hệ thống tại đây.</span>
+        </section>
+
+        <section class="stats">
+            <article><span>Tổng sự kiện</span><h2 id="count">3</h2></article>
+            <article><span>Loại vé</span><h2>0</h2></article>
+            <article><span>Đơn đặt vé</span><h2>0</h2></article>
+        </section>
+
+        <section class="panel">
+            <div class="panelHeader">
+                <div>
+                    <h2>Danh sách sự kiện</h2>
+                    <p>Dữ liệu minh họa ban đầu</p>
+                </div>
+                <button class="add" onclick="addEvent()">+ Thêm sự kiện</button>
+            </div>
+
+            <input id="search" placeholder="Tìm kiếm sự kiện..."
+                   oninput="renderEvents()">
+
+            <table>
+             <thead>
+  <tr>
+    <th>MÃ</th>
+    <th>TÊN SỰ KIỆN</th>
+    <th>ĐỊA ĐIỂM</th>
+    <th>TRẠNG THÁI</th>
+    <th>THAO TÁC</th>
+  </tr>
+</thead>
+                <tbody id="eventList"></tbody>
+            </table>
+            <p id="message">Đây là dữ liệu mẫu, chưa kết nối Backend.</p>
+     
+        </section>
+
+        <!-- Bieu mau them/sua su kien -->
+        <section class="panel" id="eventFormPanel" hidden>
+            <div class="panelHeader">
+                <div>
+                    <h2 id="eventFormTitle">Thêm sự kiện</h2>
+                    <p>Nhập thông tin sự kiện bên dưới</p>
+                </div>
+            </div>
+
+            <form id="eventForm">
+                <input type="hidden" id="eventId">
+
+                <label for="eventName">Tên sự kiện *</label>
+                <input id="eventName" type="text" required
+                       placeholder="Nhập tên sự kiện">
+
+                <label for="categoryId">Mã danh mục *</label>
+                <input id="categoryId" type="number" min="1" required
+                       placeholder="Ví dụ: 1">
+
+                <label for="venueId">Mã địa điểm *</label>
+                <input id="venueId" type="number" min="1" required
+                       placeholder="Ví dụ: 1">
+
+                <label for="organizerId">Mã người tổ chức *</label>
+                <input id="organizerId" type="number" min="1" required
+                       placeholder="Ví dụ: 1">
+
+                <label for="startDate">Ngày bắt đầu *</label>
+                <input id="startDate" type="datetime-local" required>
+
+                <label for="endDate">Ngày kết thúc *</label>
+                <input id="endDate" type="datetime-local" required>
+
+                <label for="description">Mô tả</label>
+                <textarea id="description" rows="3"
+                          placeholder="Mô tả sự kiện"></textarea>
+
+                <label for="eventStatus">Trạng thái</label>
+                <select id="eventStatus">
+    <option value="OPEN">Đang mở</option>
+    <option value="UPCOMING">Sắp diễn ra</option>
+    <option value="CLOSED">Đã đóng</option>
+    <option value="FINISHED">Đã kết thúc</option>
+    <option value="CANCELLED">Đã hủy</option>
+</select>
+
+                <label for="imageUrl">Đường dẫn ảnh</label>
+                <input id="imageUrl" type="url"
+                       placeholder="https://...">
+
+                <div class="formActions">
+                    <button type="submit" class="add">Lưu sự kiện</button>
+                    <button type="button" id="cancelEventForm"
+                            class="cancelButton">Hủy</button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
+

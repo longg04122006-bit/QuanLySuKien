@@ -1,0 +1,402 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f1f5fb;
+    color: #1e293b;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 245px;
+    padding: 28px 18px;
+    background: #12336b;
+    color: white;
+}
+
+.sidebar h2 {
+    margin: 0;
+    font-size: 30px;
+    color: #60a5fa;
+}
+
+.sidebar p {
+    margin-bottom: 35px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #bfdbfe;
+}
+
+.sidebar button {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: white;
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.sidebar button:hover,
+.sidebar button.active {
+    background: #2563eb;
+}
+
+main {
+    margin-left: 245px;
+    padding: 28px;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+header small {
+    color: #2563eb;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+header h1 {
+    margin-bottom: 0;
+}
+
+.admin {
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: white;
+    color: #12336b;
+}
+
+.welcome {
+    padding: 28px;
+    border-radius: 14px;
+    background: linear-gradient(120deg, #1d4ed8, #60a5fa);
+    color: white;
+}
+
+.welcome p {
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.welcome h2 {
+    margin: 12px 0;
+}
+
+.welcome span {
+    color: #eff6ff;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin: 24px 0;
+}
+
+.stats article {
+    padding: 22px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
+}
+
+.stats article span {
+    color: #64748b;
+}
+
+.stats article h2 {
+    margin-bottom: 0;
+    color: #2563eb;
+    font-size: 30px;
+}
+
+.panel {
+    padding: 24px;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 3px 12px #0f172a08;
+}
+
+.panelHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.panelHeader p {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.add {
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+}
+
+.add:hover {
+    background: #1d4ed8;
+}
+
+#search {
+    width: 100%;
+    max-width: 350px;
+    margin: 15px 0;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+    font-size: 13px;
+}
+
+th {
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+#message {
+    margin-top: 18px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+@media (max-width: 750px) {
+    .sidebar {
+        position: static;
+        width: 100%;
+    }
+
+    main {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    header, .panelHeader {
+        flex-wrap: wrap;
+    }
+}
+
+/* ===== NÂNG CẤP BẢNG DANH SÁCH SỰ KIỆN ===== */
+
+#eventList tr {
+    transition: background-color 0.2s ease;
+}
+
+#eventList tr:hover {
+    background-color: #f0f6ff;
+}
+
+#eventList td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #e5eaf2;
+    vertical-align: middle;
+}
+
+/* Nút Sửa và Xóa */
+#eventList button {
+    border: none;
+    border-radius: 7px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#eventList button:first-of-type {
+    background-color: #e7f0ff;
+    color: #245bd7;
+}
+
+#eventList button:first-of-type:hover {
+    background-color: #245bd7;
+    color: white;
+}
+
+#eventList button:last-of-type {
+    background-color: #ffe8e8;
+    color: #d52b35;
+}
+
+#eventList button:last-of-type:hover {
+    background-color: #d52b35;
+    color: white;
+}
+
+/* Ô tìm kiếm */
+#search {
+    padding: 12px 15px;
+    border: 1px solid #cbd7e8;
+    border-radius: 9px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#search:focus {
+    border-color: #2864e8;
+    box-shadow: 0 0 0 3px rgba(40, 100, 232, 0.12);
+}
+
+/* ===== FORM THEM / SUA SU KIEN ===== */
+
+#eventFormPanel {
+    margin-top: 24px;
+    scroll-margin-top: 20px;
+}
+
+#eventFormPanel[hidden] {
+    display: none !important;
+}
+
+#eventFormPanel form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 20px;
+}
+
+#eventFormPanel label {
+    display: block;
+    align-self: end;
+    margin-bottom: -6px;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#eventFormPanel input,
+#eventFormPanel textarea,
+#eventFormPanel select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 11px 12px;
+    border: 1px solid #d3dce9;
+    border-radius: 8px;
+    background: #fff;
+    color: #1e293b;
+    font: inherit;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#eventFormPanel input:focus,
+#eventFormPanel textarea:focus,
+#eventFormPanel select:focus {
+    border-color: #2864e8;
+    box-shadow: 0 0 0 3px rgba(40, 100, 232, 0.12);
+}
+
+#eventFormPanel textarea {
+    resize: vertical;
+}
+
+#eventFormPanel #eventName,
+#eventFormPanel #description,
+#eventFormPanel #imageUrl,
+#eventFormPanel .formActions {
+    grid-column: 1 / -1;
+}
+
+#eventFormPanel .formActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#eventFormPanel .formActions button {
+    padding: 11px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#eventFormPanel .cancelButton {
+    background: #e9eef5;
+    color: #334155;
+}
+
+#eventFormPanel .cancelButton:hover {
+    background: #d8e1ed;
+}
+
+@media (max-width: 650px) {
+    #eventFormPanel form {
+        grid-template-columns: 1fr;
+    }
+
+    #eventFormPanel #eventName,
+    #eventFormPanel #description,
+    #eventFormPanel #imageUrl,
+    #eventFormPanel .formActions {
+        grid-column: 1;
+    }
+}
+.status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-upcoming {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-ongoing {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-completed {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+.status-cancelled {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.status-unknown {
+    background: #f3f4f6;
+    color: #374151;
+}
